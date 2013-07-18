@@ -104,8 +104,8 @@ while True:
     if guess in secretWord:
         correctGuessedLetter = correctGuessedLetter + guess
         foundAllLetters = True
-        for i in range(0, len(secretWord)):
-            if secretWord[i] not in correctGuessedLetter:
+        for i in secretWord:
+            if i not in correctGuessedLetter:
                 foundAllLetters = False
                 break
         if foundAllLetters:
