@@ -56,7 +56,7 @@ HANGMAN = ['''
 words = 'cat dog crazy monkey quantum light python speed strike aircraft shuttle google doodle'.split()
 
 def chooseRandomWord(words):
-    wordIndex = random.randint(0,len(words)-1)
+    wordIndex = random.randint(0,len(words))
     word = words[wordIndex]
     return word
 
