@@ -1,6 +1,6 @@
 # Hangman game
 
-import random
+import random, string
 
 HANGMAN = ['''
   +---+
@@ -56,68 +56,66 @@ HANGMAN = ['''
 words = 'cat dog crazy monkey quantum light python speed strike aircraft shuttle google doodle'.split()
 
 def chooseRandomWord(words):
-    wordIndex = random.randint(0,len(words))
-    word = words[wordIndex]
-    return word
+    return random.choice(words)
 
 def guessLetter(alreadyGuessedLetter):
-    print 'Guess a letter'
-    guessLetter = str(raw_input())
-    guessLetter = guessLetter.lower()
-    if len(guessLetter)!=1:
-        print 'Please Enter a sinle Letter'
-    elif guessLetter not in 'abcdefghijklmnopqrstuvwxyz':
-        print 'Please Enter a LETTER'
-    elif guessLetter in alreadyGuessedLetter:
-        print 'You have already guessed this letter. Choose again.'
-    else:
-        return guessLetter
+    """ Asks the user to input a letter."""
+    print ('Guess a letter')
+    while True:
+        guessLetter = raw_input().lower()
+        if len(guessLetter)!=1:
+            print ('Please Enter a sinle Letter')
+        elif guessLetter not in string.ascii_lowercase:
+            print ('Please Enter a LETTER')
+        elif guessLetter in alreadyGuessedLetter:
+            print ('You have already guessed this letter. Choose again.')
+        else:
+            return guessLetter
 
-def display(word, misGuessedLetter, HANGMAN, correctGuessedLetter):
-    print HANGMAN[len(misGuessedLetter)]
-    print ''
-    progress = '_'*len(word)
-    for i in range(len(word)):
-        if word[i] in correctGuessedLetter:
-            progress = progress[:i] + word[i] + progress[i+1:]
-    print progress
+def display(word, misGuessedLetter, correctGuessedLetter):
+    print (HANGMAN[len(misGuessedLetter)])
+    print ('')
+    progress = ''
+    for letter in word:
+        if letter in correctGuessedLetter:
+            progress += letter
+        else:
+            progress += "-"
+    print (progress)
+    if misGuessedLetter: print ("*{0:s}*".format(misGuessedLetter))
     
 def playAgain():
-    print 'Do you want to play again? (yes or no)'
-    answer = str(raw_input())
-    answer = answer.lower()
+    print ('Do you want to play again? (yes or No)')
+    answer = raw_input().lower()
     return answer.startswith('y')
 
-print "        PT's   H A N G M A N           "
-print ''
+print ("        PT's   H A N G M A N           \n")
 misGuessedLetter = ''
 correctGuessedLetter = ''
 secretWord = chooseRandomWord(words)
 gameIsDone = False
 
-while True:
-    display(secretWord, misGuessedLetter, HANGMAN, correctGuessedLetter)
+while not gameIsDone:
+    display(secretWord, misGuessedLetter, correctGuessedLetter)
     print''
     guess = guessLetter(correctGuessedLetter + misGuessedLetter)
-    while guess == None:
-        guess = guessLetter(correctGuessedLetter + misGuessedLetter)
     if guess in secretWord:
-        correctGuessedLetter = correctGuessedLetter + guess
+        correctGuessedLetter += guess
         foundAllLetters = True
-        for i in secretWord:
-            if i not in correctGuessedLetter:
+        for letter in secretWord:
+            if letter not in correctGuessedLetter:
                 foundAllLetters = False
                 break
         if foundAllLetters:
-            print "Yeah!! You have correctly guessed the word. The word is '", secretWord,"'"
-            print 'You Have Won!!!'
+            print ("Yeah!! You have correctly guessed the word. The word is '{0:s}'".format(secretWord))
+            print ('You Have Won!!!')
             gameIsDone = True
     else:
-        misGuessedLetter = misGuessedLetter + guess
+        misGuessedLetter += guess
         if len(misGuessedLetter) == len(HANGMAN)-1:
-            display(secretWord, misGuessedLetter, HANGMAN, correctGuessedLetter)
-            print 'Sorry! The man is dead!! You have run out of guesses.'
-            print "The correct word was '", secretWord,"'"
+            display(secretWord, misGuessedLetter, correctGuessedLetter)
+            print ('Sorry! The man is dead!! You have run out of guesses.')
+            print ("The correct word was '{0:s}'".format(secretWord))
             gameIsDone = True
     if gameIsDone:
         if playAgain():
@@ -125,5 +123,3 @@ while True:
             correctGuessedLetter = ''
             gameIsDone = False
             secretWord = chooseRandomWord(words)
-        else:
-            break
